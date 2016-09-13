@@ -11,9 +11,11 @@ class NavigationBar extends React.Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
+    const navbarBorder = {borderRadius: '0px'}
 
     const userLinks = (
       <ul className="nav navbar-nav navbar-right">
+        <li><Link to="/portfolio">Portfolio</Link></li>
         <li><a href="#" onClick={this.logout.bind(this)}>Logout</a></li>
       </ul>
     );
@@ -26,7 +28,7 @@ class NavigationBar extends React.Component {
     );
 
     return (
-      <nav className="navbar navbar-default">
+      <nav className="navbar navbar-inverse" style={navbarBorder}>
         <div className="container-fluid">
           <div className="navbar-header">
             <Link to="/">
