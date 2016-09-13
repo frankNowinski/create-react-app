@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { doesStockExists } from '../../actions/stockActions';
+import validateInput from '../../utils/validations/addStockValidations';
 
 class AddStockForm extends React.Component {
   constructor(props) {
@@ -18,19 +19,29 @@ class AddStockForm extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.checkStockExists = this.checkStockExists.bind(this);
+    this.checkSharesValid = this.checkSharesValid.bind(this);
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  isValid() {
+    const { errors, isValid } = validateInput(this.state);
+
+    if (!isValid) {
+      this.setState({ errors });
+    }
+
+    return isValid;
+  }
+
   onSubmit(e) {
     e.preventDefault();
-    // this.props.getStock(this.state.symbol).then(stock => {
-    //   if (stock.data.query.results.quote.Ask === null) {
-    //     this.setState({ invalid: true });
-    //   };
-    // });
+
+    if (this.isValid()) {
+
+    }
   }
 
   checkStockExists(e) {
@@ -45,10 +56,26 @@ class AddStockForm extends React.Component {
           invalid = true;
         } else {
           errors[field] = '';
-          invalid = false
-        }
+          invalid = errors.shares === '' ? false : true;
+      }
         this.setState({ errors, invalid });
       })
+    }
+  }
+
+  checkSharesValid(e) {
+    const shares = Number(e.target.value);
+
+    let invalid, errors = this.state.errors;
+    if (shares !== '') {
+      if (!Number.isInteger(shares) || shares < 0){
+        errors.shares = 'Must be a positive number';
+        invalid = true;
+      } else {
+        errors.shares = '';
+        invalid = errors.symbol === '' ? false : true;
+      }
+      this.setState({ errors, invalid });
     }
   }
 
@@ -71,7 +98,7 @@ class AddStockForm extends React.Component {
           {errors.symbol && <span className="help-block">{errors.symbol}</span>}
         </div><br />
 
-        <div className="row">
+        <div className={classnames("row", { 'has-error': errors.shares })}>
           <label className="col-md-4 lead">Shares</label>
 
           <input
@@ -80,7 +107,11 @@ class AddStockForm extends React.Component {
             value={this.state.shares}
             className="col-md-5 form-control"
             onChange={this.onChange}
+            onBlur={this.checkSharesValid}
           />
+
+          {errors.shares && <span className="help-block">{errors.shares}</span>}
+
         </div>
 
         <div className="row text-center">
