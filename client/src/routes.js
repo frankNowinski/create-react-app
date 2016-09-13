@@ -7,7 +7,7 @@ import SignupPage from './components/signup/SignupPage';
 import LoginPage from './components/login/LoginPage';
 import PortfolioPage from './components/portfolio/PortfolioPage';
 
-import requireAuth from './utils/requireAuth';
+import requireAuth from './utils/auth/requireAuth';
 
 export default (
   <Route path="/" component={App}>
