@@ -14,7 +14,7 @@ router.post('/', authenticate, (req, res) => {
   Stock.forge({
     symbol, shares, userId
   }, { hasTimestamps: true }).save()
-    .then(stock => res.json({ success: true }))
+    .then(stock => res.json({ stock }))
     .catch( err => res.status(500).json({ error: err }));
 })
 
