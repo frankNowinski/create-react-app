@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames'
 
-const TextFieldGroup = ({ field, value, label, error, type, onChange, checkUserExists}) => {
+const TextFieldGroup = ({ field, value, label, error, type, onChange, checkUserExists }) => {
   return (
     <div className={classnames("form-group", { 'has-error': error })}>
       <label className="control-label">{label}</label>
