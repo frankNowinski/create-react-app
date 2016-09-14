@@ -8,7 +8,7 @@ export default function validateInput(data) {
     errors.symbol = 'Stock symbol is required';
   }
 
-  if (Validator.isNull(data.shares)) {
+  if (Validator.isNull(data.shares) || data.shares === 0) {
     errors.shares = 'Must hold at least one share';
   }
 

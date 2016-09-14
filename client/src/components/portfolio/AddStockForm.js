@@ -1,8 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { doesStockExists } from '../../actions/stockActions';
+import { addStock, addStockToPortfolio } from '../../actions/stockActions';
 import validateInput from '../../utils/validations/addStockValidations';
+import doesStockExists from '../../utils/validations/stockExistsValidation';
 
 class AddStockForm extends React.Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class AddStockForm extends React.Component {
       shares: '',
       errors: {},
       isLoading: false,
-      invalid: false
+      invalid: false,
+      userId: this.props.user.id
     }
 
     this.onChange = this.onChange.bind(this);
@@ -40,24 +42,41 @@ class AddStockForm extends React.Component {
     e.preventDefault();
 
     if (this.isValid()) {
-
+      this.props.addStock(this.state).then(stock => {
+        console.log('In the add stock form');
+        // this.props.addStockToPortfolio(stock);
+      }).catch(err => {
+        this.setState({ errors: err.response.data, isLoading: false });
+      })
     }
   }
 
+  // this.setState({ errors: {}, isLoading: true });
+  // this.props.userSignupRequest(this.state).then(
+  //   () => {
+  //     this.props.addFlashMessage({
+  //       type: 'success',
+  //       text: 'You have signed up successfully. Welcome!'
+  //     })
+  //     this.context.router.push('/');
+  //   },
+  //   (err) => this.setState({ errors: err.response.data, isLoading: false})
+  // );
+
   checkStockExists(e) {
-    const field = e.target.name;
     const symbol = e.target.value;
+
     if (symbol !== '') {
-      this.props.doesStockExists(symbol).then(res => {
-        let invalid, errors = this.state.errors, stock = res.data.query.results.quote
+      doesStockExists(symbol).then(res => {
+        let invalid, errors = this.state.errors, stock = res.data.query.results.quote;
 
         if (stock.Ask === null) {
-          errors[field] = `${symbol.toUpperCase()} is not a valid stock`;
+          errors.symbol = `${symbol.toUpperCase()} is not a valid stock`;
           invalid = true;
         } else {
-          errors[field] = '';
-          invalid = errors.shares === '' ? false : true;
-      }
+          errors.symbol = '';
+          invalid = false;
+        }
         this.setState({ errors, invalid });
       })
     }
@@ -68,12 +87,12 @@ class AddStockForm extends React.Component {
 
     let invalid, errors = this.state.errors;
     if (shares !== '') {
-      if (!Number.isInteger(shares) || shares < 0){
+      if (!Number.isInteger(shares) || shares < 0 || shares === 0){
         errors.shares = 'Must be a positive number';
         invalid = true;
       } else {
         errors.shares = '';
-        invalid = errors.symbol === '' ? false : true;
+        invalid = errors.symbol === '' || errors.symbol === undefined ? false : true;
       }
       this.setState({ errors, invalid });
     }
@@ -111,7 +130,6 @@ class AddStockForm extends React.Component {
           />
 
           {errors.shares && <span className="help-block">{errors.shares}</span>}
-
         </div>
 
         <div className="row text-center">
@@ -122,4 +140,9 @@ class AddStockForm extends React.Component {
   }
 }
 
-export default connect(null, { doesStockExists })(AddStockForm);
+AddStockForm.propTypes = {
+  addStock: React.PropTypes.func.isRequired,
+  addStockToPortfolio: React.PropTypes.func.isRequired
+}
+
+export default connect(null, { addStock, addStockToPortfolio })(AddStockForm);
