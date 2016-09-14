@@ -25,7 +25,6 @@ class LoginForm extends React.Component {
     if(!isValid) {
       this.setState({ errors });
     }
-
     return isValid;
   }
 
@@ -33,10 +32,11 @@ class LoginForm extends React.Component {
     e.preventDefault();
     if (this.isValid()) {
       this.setState({ errors: {}, isLoading: true});
-      this.props.login(this.state).then(
-        (res) => this.context.router.push('/portfolio'),
-        (err) => this.setState({ errors: err.response.data.errors, isLoading: false })
-      )
+      this.props.login(this.state).then((res) => {
+        this.context.router.push('/portfolio')
+      }).catch(err => {
+        this.setState({ errors: err.response.data.errors, isLoading: false })
+      })
     }
   }
 
@@ -85,4 +85,5 @@ LoginForm.propTypes = {
 LoginForm.contextTypes = {
   router: React.PropTypes.object.isRequired
 }
+
 export default connect(null, { login })(LoginForm);

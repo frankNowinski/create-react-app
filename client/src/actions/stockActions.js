@@ -1,10 +1,7 @@
 import axios from 'axios';
-import { ADD_STOCK_TO_PORTFOLIO } from './types';
+import { ADD_STOCK_TO_PORTFOLIO, FETCH_STOCKS, REMOVE_STOCK } from './types';
 
 export function addStock(stock) {
-  // return dispatch => {
-  //   return axios.post('/api/stocks', stock);
-  // }
   let newStock = axios.post('/api/stocks', stock);
 
   return {
@@ -12,8 +9,22 @@ export function addStock(stock) {
     payload: newStock
   }
 }
- export function addStockToPortfolio(stock) {
-   return {
-     stock
-   }
- }
+
+export function fetchStocks() {
+  let userStocks = axios.get('/api/stocks');
+
+  return {
+    type: FETCH_STOCKS,
+    payload: userStocks
+  }
+}
+
+export function removeStock(index, id) {
+
+  let removeStock = axios.delete(`/api/stocks/${id}`);
+
+  return {
+    type: REMOVE_STOCK,
+    payload: index
+  }
+}

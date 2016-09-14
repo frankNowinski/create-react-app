@@ -12,56 +12,30 @@ router.get('/', authenticate, (req, res) => {
   let userId = req.currentUser.id;
 
   Stock.where('userId', userId).fetchAll().then(userStocks => {
-    res.send(JSON.stringify(userStocks));
+    res.json( userStocks );
   }).catch(function(err) {
     res.status(401).json({ error: 'Error querying stocks' });
   });
 
-  // Stock.query({
-  //   where: { userId: userId }
-  // }).fetch().then(stocks => {
-  //   console.log(stocks);
-  // })
-
-  // console.log(knex.select().from('stocks').where('userId', userId));
-  // jwt.verify(token), config.jwtSecret, (err, decoded) => {
-  //   console.log(decoded);
-  // };
-  // if (token) {
-  //   jwt.verify(token, config.jwtSecret, (err, decoded) => {
-  //     if (err) {
-  //       res.status(401).json({ error: 'Failed to authenticate' });
-  //     } else {
-  //       User.query({
-  //         where: { id: decoded.id },
-  //         select: [ 'email', 'id', 'username' ]
-  //       }).fetch().then(user => {
-  //         if (!user) {
-  //           res.status(401).json({ error: 'No such user' });
-  //         } else {
-  //           req.currentUser = user;
-  //           next();
-  //         }
-  //       });
-  //     }
-  //   });
-  // } else {
-  //   res.status(403).json({
-  //     error: 'No token provided'
-  //   });
-  // }
-  // res.status(201).json({ success: true });
 });
 
 router.post('/', authenticate, (req, res) => {
-  const { symbol, shares, userId } = req.body;
+  const { symbol, shares } = req.body;
+  let userId = req.currentUser.id;
 
   Stock.forge({
     symbol, shares, userId
   }, { hasTimestamps: true }).save()
-    .then(stock => res.json({ stock }))
-    .catch( err => res.status(500).json({ error: err }));
+    .then(stock => res.json( stock ))
+    .catch(err => res.status(500).json({ error: err }));
+});
+
+router.delete('/:id', authenticate, (req, res) => {
+  Stock.query().where('id', req.params.id).del()
+  .then(stock => res.json( req.params.id ))
+  .catch(err => res.status(500).json({ error: err}));
 })
+
 
 // validateInput(req.body, commonValidations).then(({ errors, isValid }) => {
 //   if(isValid) {
