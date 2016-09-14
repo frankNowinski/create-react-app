@@ -18,7 +18,7 @@ export function fetchStocks() {
 }
 
 export function removeStock(index, id) {
-  let removeStock = axios.delete(`/api/stocks/${id}`);
+  axios.delete(`/api/stocks/${id}`);
   return {
     type: REMOVE_STOCK,
     payload: index
