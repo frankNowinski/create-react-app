@@ -1,14 +1,13 @@
 import React from 'react';
 
-class StockItem extends React.Component {
-  render() {
-    return (
-      <div>
-        <span className="lead">{this.props.stock.symbol}</span>
-        <button onClick={this.props.deleteStock.bind(this, this.props.index, this.props.stock.id)} className="close"><span>&times;</span></button>
-      </div>
-    )
-  }
+const StockItem = (props) => {
+  return (
+    <div>
+      <span className="lead">{props.stock.symbol}</span>
+      
+      <button onClick={props.deleteStock.bind(this, props.index, props.stock.id)} className="close"><span>&times;</span></button>
+    </div>
+  )
 }
 
 StockItem.propTypes = {

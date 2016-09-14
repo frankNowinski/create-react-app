@@ -2,7 +2,6 @@ import React from 'react';
 import StockItem from './StockItem';
 
 class StockList extends React.Component {
-
   renderStocks() {
     return this.props.userStocks.map((stock, index) => {
       return (
@@ -14,7 +13,6 @@ class StockList extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <ul className="list-group">

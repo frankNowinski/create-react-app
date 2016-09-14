@@ -68,10 +68,11 @@ class AddStockForm extends React.Component {
   }
 
   checkSharesValid(e) {
-    const shares = Number(e.target.value);
-
     let invalid, errors = this.state.errors;
-    if (shares !== '') {
+
+    if (e.target.value !== '') {
+      const shares = Number(e.target.value);
+
       if (!Number.isInteger(shares) || shares < 0 || shares === 0){
         errors.shares = 'Must be a positive number';
         invalid = true;

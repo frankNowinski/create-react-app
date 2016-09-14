@@ -33,24 +33,7 @@ router.post('/', authenticate, (req, res) => {
 router.delete('/:id', authenticate, (req, res) => {
   Stock.query().where('id', req.params.id).del()
   .then(stock => res.json( req.params.id ))
-  .catch(err => res.status(500).json({ error: err}));
+  .catch(err => res.status(500).json({ error: err }));
 })
-
-
-// validateInput(req.body, commonValidations).then(({ errors, isValid }) => {
-//   if(isValid) {
-//     const { username, email, password } = req.body;
-//     const password_digest = bcrypt.hashSync(password, 10);
-//
-//     User.forge({
-//       username, email, password_digest
-//     }, { hasTimestamps: true }).save()
-//       .then(user => res.json({ success: true }))
-//       .catch(err => res.status(500).json({ error: err }));
-//
-//   } else {
-//     res.status(400).json(errors);
-//   }
-// });
 
 export default router;

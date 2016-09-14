@@ -9,15 +9,6 @@ class PortfolioPage extends React.Component {
     this.props.fetchStocks();
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log('will recieve props');
-  // }
-  //
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log('should componetn update');
-  //   return true;
-  // }
-
   deleteStock(index, id) {
     this.props.removeStock(index, id);
   }
