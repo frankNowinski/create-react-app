@@ -1,11 +1,56 @@
 import express from 'express';
+import jwtDecode from 'jwt-decode';
+import config from '../config';
+import knex from 'knex'
 import authenticate from '../middlewares/authenticate';
 
 import Stock from '../models/stock';
 
 let router = express();
+
 router.get('/', authenticate, (req, res) => {
-  res.status(201).json({ success: true });
+  let userId = req.currentUser.id;
+
+  Stock.where('userId', userId).fetchAll().then(userStocks => {
+    res.send(JSON.stringify(userStocks));
+  }).catch(function(err) {
+    res.status(401).json({ error: 'Error querying stocks' });
+  });
+
+  // Stock.query({
+  //   where: { userId: userId }
+  // }).fetch().then(stocks => {
+  //   console.log(stocks);
+  // })
+
+  // console.log(knex.select().from('stocks').where('userId', userId));
+  // jwt.verify(token), config.jwtSecret, (err, decoded) => {
+  //   console.log(decoded);
+  // };
+  // if (token) {
+  //   jwt.verify(token, config.jwtSecret, (err, decoded) => {
+  //     if (err) {
+  //       res.status(401).json({ error: 'Failed to authenticate' });
+  //     } else {
+  //       User.query({
+  //         where: { id: decoded.id },
+  //         select: [ 'email', 'id', 'username' ]
+  //       }).fetch().then(user => {
+  //         if (!user) {
+  //           res.status(401).json({ error: 'No such user' });
+  //         } else {
+  //           req.currentUser = user;
+  //           next();
+  //         }
+  //       });
+  //     }
+  //   });
+  // } else {
+  //   res.status(403).json({
+  //     error: 'No token provided'
+  //   });
+  // }
+  // res.status(201).json({ success: true });
 });
 
 router.post('/', authenticate, (req, res) => {
