@@ -19,7 +19,7 @@ class PortfolioPage extends React.Component {
         <h2 className="text-center">Your Portfolio</h2><hr />
 
         <div className="col-md-3">
-          <AddStockForm />
+          <AddStockForm userStocks={this.props.userStocks} />
         </div>
 
         <div className="col-md-9">

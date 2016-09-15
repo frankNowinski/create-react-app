@@ -9,7 +9,7 @@ let router = express.Router();
 
 function validateInput(data, otherValidations) {
   let { errors } = otherValidations(data);
-
+  
   return User.query({
     where: { email: data.email },
     orWhere: { username: data.username }

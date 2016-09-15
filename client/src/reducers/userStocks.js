@@ -5,7 +5,7 @@ export default (state = [], action = {}) => {
     case ADD_STOCK_TO_PORTFOLIO:
       return [...state, action.payload.data]
     case FETCH_STOCKS:
-      return action.payload.data;
+      return action.payload.data.length === undefined ? [action.payload.data] : action.payload.data;
     case REMOVE_STOCK:
       state.splice(action.payload, 1)
       return [...state];

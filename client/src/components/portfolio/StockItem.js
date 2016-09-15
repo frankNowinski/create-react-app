@@ -1,7 +1,6 @@
 import React from 'react';
 
 const StockItem = (props) => {
-  console.log(props.stock);
   return (
     <div className="row">
       <div className="col-md-1">{props.stock.symbol}</div>

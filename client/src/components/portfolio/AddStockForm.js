@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { addStock } from '../../actions/stockActions';
-import validateInput from '../../utils/validations/addStockValidations';
+import validateStock from '../../utils/validations/stockValidations';
 import doesStockExists from '../../utils/validations/stockExistsValidation';
 
 class AddStockForm extends React.Component {
@@ -28,11 +28,12 @@ class AddStockForm extends React.Component {
   }
 
   isValid() {
-    const { errors, isValid } = validateInput(this.state);
+    const { errors, isValid } = validateStock(this.state);
     if (!isValid) {
       this.setState({ errors });
     }
-    return isValid;
+    return true;
+    // return isValid;
   }
 
   onSubmit(e) {
@@ -43,13 +44,18 @@ class AddStockForm extends React.Component {
       this.props.addStock(this.state).then(stock => {
         this.setState({ symbol: '', shares: '', isLoading: false });
       }).catch(err => {
-        this.setState({ errors: err.response.data, isLoading: false });
+        if (err.response !== undefined) {
+          this.setState({ errors: err.response.data, isLoading: false });
+        } else {
+          this.setState({ isLoading: false });
+        }
       });
     }
   }
 
   checkStockExists(e) {
     const symbol = e.target.value;
+    let ownedSymbols = this.props.userStocks.map(stock => stock.symbol);
 
     if (symbol !== '') {
       doesStockExists(symbol).then(res => {
@@ -57,6 +63,9 @@ class AddStockForm extends React.Component {
 
         if (stock.Ask === null) {
           errors.symbol = `${symbol.toUpperCase()} is not a valid stock`;
+          invalid = true;
+        } else if (ownedSymbols.includes(symbol)) {
+          errors.symbol = `You already own ${symbol.toUpperCase()}`;
           invalid = true;
         } else {
           errors.symbol = '';
@@ -97,7 +106,7 @@ class AddStockForm extends React.Component {
             value={this.state.symbol}
             className="col-md-5 form-control"
             onChange={this.onChange}
-            onBlur={this.checkStockExists}
+            // onBlur={this.checkStockExists}
           />
 
           {errors.symbol && <span className="help-block">{errors.symbol}</span>}
@@ -128,6 +137,7 @@ class AddStockForm extends React.Component {
 
 AddStockForm.propTypes = {
   addStock: React.PropTypes.func.isRequired,
+  userStocks: React.PropTypes.array.isRequired
 }
 
 export default connect(null, { addStock })(AddStockForm);
