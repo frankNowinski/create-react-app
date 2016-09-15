@@ -52,7 +52,7 @@ router.post('/', authenticate, (req, res) => {
       });
     },
     function(errors, callback) {
-      if (!isEmpty(symbol)) {
+      if (!isEmpty(symbol) && !isEmpty(shares) && Number.isInteger(Number(shares)) && shares > 0){
         request(formatUrlForYahooYQL(symbol), (error, response, body) => {
           let parseStocks = JSON.parse(body);
           let stockData = parseStocks.query.results.quote;
