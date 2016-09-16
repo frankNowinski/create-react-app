@@ -56,12 +56,12 @@ class AddStockForm extends React.Component {
   checkStockExists(e) {
     const symbol = e.target.value;
     let ownedSymbols = this.props.userStocks.map(stock => stock.symbol);
-
+    
     if (symbol !== '') {
       doesStockExists(symbol).then(res => {
         let invalid, errors = this.state.errors, stock = res.data.query.results.quote;
 
-        if (stock.Ask === null) {
+        if (stock.Ask === null || symbol.indexOf(' ') >= 0) {
           errors.symbol = `${symbol.toUpperCase()} is not a valid stock`;
           invalid = true;
         } else if (ownedSymbols.includes(symbol)) {
@@ -108,53 +108,56 @@ class AddStockForm extends React.Component {
             <div className="modal-content">
               <div className="modal-header">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+                  <span aria-hidden="true">&times;</span>
+                  </button>
                 <h4 className="modal-title text-md-center" id="myModalLabel">Add a stock to your portfolio</h4>
               </div>
 
               <div className="modal-body">
-               <form onSubmit={this.onSubmit} className="form-inline">
-                 <div className={classnames("row", { 'has-error': errors.symbol })}>
-                   <label className="col-md-4 lead">Symbol</label>
-                   <input
-                    type="text"
-                    name="symbol"
-                    value={this.state.symbol}
-                    className="col-md-5 form-control"
-                    onChange={this.onChange}
-                    onBlur={this.checkStockExists}
-                  />
-
-                  {errors.symbol && <span className="help-block">{errors.symbol}</span>}
-                </div><br />
-
-                <div className={classnames("row", { 'has-error': errors.shares })}>
-                  <label className="col-md-4 lead">Shares</label>
-                  <input
-                    type="text"
-                    name="shares"
-                    value={this.state.shares}
-                    className="col-md-5 form-control"
-                    onChange={this.onChange}
-                    onBlur={this.checkSharesValid}
-                  />
-
-                  {errors.shares && <span className="help-block">{errors.shares}</span>}
+                <form onSubmit={this.onSubmit}>
+                <div className={classnames("form-group", "row", { 'has-error': errors.symbol })}>
+                <label className="col-sm-5 text-sm-center lead">Stock</label>
+                  <div className="col-sm-6">
+                    <input
+                      type="text"
+                      name="symbol"
+                      value={this.state.symbol}
+                      className="form-control form-control"
+                      onChange={this.onChange}
+                      onBlur={this.checkStockExists}
+                      placeholder="AAPL"
+                    />
+                    {errors.symbol && <span className="help-block">{errors.symbol}</span>}
+                  </div>
                 </div>
 
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div className={classnames("form-group", "row", { 'has-error': errors.shares })}>
+                  <label className="col-sm-5 text-sm-center lead">Shares</label>
+                  <div className="col-sm-6">
+                    <input
+                      type="text"
+                      name="shares"
+                      value={this.state.shares}
+                      className="col-md-5 form-control"
+                      onChange={this.onChange}
+                      onBlur={this.checkSharesValid}
+                      placeholder="10"
+                    />
 
-                  <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+                    {errors.shares && <span className="help-block">{errors.shares}</span>}
+                  </div>
                 </div>
-              </form>
+
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }

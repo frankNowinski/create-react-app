@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="container-fullwidth">
         <NavigationBar />
-        <FlashMessagesList />
+        <FlashMessagesList /><br />
         {this.props.children}
       </div>
     )

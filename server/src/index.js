@@ -11,7 +11,6 @@ let app = express();
 
 app.use(bodyParser.json());
 
-// app.use('/query', query);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/stocks', stocks);
