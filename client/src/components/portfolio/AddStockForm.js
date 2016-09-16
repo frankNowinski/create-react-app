@@ -56,7 +56,7 @@ class AddStockForm extends React.Component {
   checkStockExists(e) {
     const symbol = e.target.value;
     let ownedSymbols = this.props.userStocks.map(stock => stock.symbol);
-    
+
     if (symbol !== '') {
       doesStockExists(symbol).then(res => {
         let invalid, errors = this.state.errors, stock = res.data.query.results.quote;
@@ -77,12 +77,11 @@ class AddStockForm extends React.Component {
   }
 
   checkSharesValid(e) {
+    const shares = parseFloat(e.target.value);
     let invalid, errors = this.state.errors;
 
     if (e.target.value !== '') {
-      const shares = Number(e.target.value);
-
-      if (!Number.isInteger(shares) || shares < 0 || shares === 0){
+      if (isNaN(shares) || shares < 0 || shares === 0){
         errors.shares = 'Must be a positive number';
         invalid = true;
       } else {
@@ -127,6 +126,7 @@ class AddStockForm extends React.Component {
                       onBlur={this.checkStockExists}
                       placeholder="AAPL"
                     />
+
                     {errors.symbol && <span className="help-block">{errors.symbol}</span>}
                   </div>
                 </div>

@@ -3,7 +3,9 @@ import StockItem from './StockItem';
 
 class StockList extends React.Component {
   renderStocks() {
+    console.log(this.props.userStocks);
     return this.props.userStocks.map((stock, index) => {
+      console.log(stock.id);
       return (
         <StockItem key={stock.id} stock={stock} index={index} deleteStock={this.props.deleteStock}/>
       )
@@ -12,7 +14,7 @@ class StockList extends React.Component {
 
   render() {
     return (
-      <table className="table table-inverse">
+      <table className="table table-hover">
         <thead>
           <tr>
             <th>Company</th>

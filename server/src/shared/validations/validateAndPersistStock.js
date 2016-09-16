@@ -6,11 +6,12 @@ import formatUrlForYahooYQL from '../yahooApi/getStockData';
 import waterfall from 'async/waterfall';
 
 function symbolAndSharesValid(symbol, shares) {
-  return (!isEmpty(symbol) && !isEmpty(shares) && Number.isInteger(Number(shares)) && shares > 0)
+  return (!isEmpty(symbol) && !isEmpty(shares) && !isNaN(shares) || shares > 0 || shares !== 0)
 }
 
 export default function validateAndPersistStock(req, res) {
-  const { symbol, shares } = req.body;
+  const { symbol } = req.body;
+  const shares = parseFloat(req.body.shares);
   let userId = req.currentUser.id;
   let errors = {};
 
@@ -34,7 +35,7 @@ export default function validateAndPersistStock(req, res) {
             Stock.forge({
               symbol, shares, userId
             }, { hasTimestamps: true }).save().then(stock => {
-              stockData.shares = shares;
+              stockData.shares = stock.attributes.shares;
               stockData.id = stock.attributes.id;
               res.json(stockData);
             })

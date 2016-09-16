@@ -21,9 +21,11 @@ router.get('/', authenticate, (req, res) => {
         if (!error && response.statusCode == 200) {
           let parseStocks = JSON.parse(body);
           let stockData = parseStocks.query.results.quote;
+          stockData = stockData.length === undefined ? [stockData] : stockData;
 
           for (let i = 0; i < stockData.length; i++) {
             stockData[i].shares = userStocks.models[i].attributes.shares
+            console.log(userStocks.models[i].attributes.id);
             stockData[i].id = userStocks.models[i].attributes.id
           }
           res.json(stockData);

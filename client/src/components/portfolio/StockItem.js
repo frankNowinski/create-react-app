@@ -8,7 +8,7 @@ const StockItem = (props) => {
       <td>{props.stock.PercentChange}</td>
       <td>{props.stock.shares}</td>
       <td>{props.stock.dailyGain}</td>
-      <td onClick={props.deleteStock.bind(this, props.index, props.stock.id)} className="close col-md-1"><span>&times;</span></td>
+      <td><button onClick={props.deleteStock.bind(this, props.index, props.stock.id)} className="close text-xs-center"><span>&times;</span></button></td>
     </tr>
   )
 }
