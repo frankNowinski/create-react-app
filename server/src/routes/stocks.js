@@ -25,7 +25,6 @@ router.get('/', authenticate, (req, res) => {
 
           for (let i = 0; i < stockData.length; i++) {
             stockData[i].shares = userStocks.models[i].attributes.shares
-            console.log(userStocks.models[i].attributes.id);
             stockData[i].id = userStocks.models[i].attributes.id
           }
           res.json(stockData);

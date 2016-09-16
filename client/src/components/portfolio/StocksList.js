@@ -3,11 +3,9 @@ import StockItem from './StockItem';
 
 class StockList extends React.Component {
   renderStocks() {
-    console.log(this.props.userStocks);
     return this.props.userStocks.map((stock, index) => {
-      console.log(stock.id);
       return (
-        <StockItem key={stock.id} stock={stock} index={index} deleteStock={this.props.deleteStock}/>
+        <StockItem key={stock.id} stock={stock} index={index} deleteStock={this.props.deleteStock} />
       )
     })
   }

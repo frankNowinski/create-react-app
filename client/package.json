@@ -30,6 +30,9 @@
     "extends": "./node_modules/react-scripts/config/eslint.js",
     "env": {
         "jquery": true
+    },
+    "globals": {
+      "$": true
     }
   },
   "proxy": "http://localhost:8080"
