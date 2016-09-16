@@ -5,20 +5,28 @@ class StockList extends React.Component {
   renderStocks() {
     return this.props.userStocks.map((stock, index) => {
       return (
-        <li key={stock.id} className="list-group-item">
-          <StockItem stock={stock} index={index} deleteStock={this.props.deleteStock}/>
-        </li>
+        <StockItem key={stock.id} stock={stock} index={index} deleteStock={this.props.deleteStock}/>
       )
     })
   }
 
   render() {
     return (
-      <div>
-        <ul className="list-group">
-          { this.renderStocks() }
-        </ul>
-      </div>
+      <table className="table table-inverse">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Price</th>
+            <th>Percent Change</th>
+            <th>Shares</th>
+            <th>Daily Gain</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.renderStocks()}
+        </tbody>
+      </table>
     )
   }
 }

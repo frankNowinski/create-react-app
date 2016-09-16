@@ -32,8 +32,7 @@ class AddStockForm extends React.Component {
     if (!isValid) {
       this.setState({ errors });
     }
-    return true;
-    // return isValid;
+    return isValid;
   }
 
   onSubmit(e) {
@@ -95,7 +94,6 @@ class AddStockForm extends React.Component {
 
   render() {
     const { errors } = this.state;
-
     return (
       <form onSubmit={this.onSubmit} className="form-inline">
         <div className={classnames("row", { 'has-error': errors.symbol })}>
@@ -106,7 +104,7 @@ class AddStockForm extends React.Component {
             value={this.state.symbol}
             className="col-md-5 form-control"
             onChange={this.onChange}
-            // onBlur={this.checkStockExists}
+            onBlur={this.checkStockExists}
           />
 
           {errors.symbol && <span className="help-block">{errors.symbol}</span>}
@@ -114,7 +112,6 @@ class AddStockForm extends React.Component {
 
         <div className={classnames("row", { 'has-error': errors.shares })}>
           <label className="col-md-4 lead">Shares</label>
-
           <input
             type="text"
             name="shares"

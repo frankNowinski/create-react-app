@@ -14,31 +14,36 @@ class NavigationBar extends React.Component {
     const navbarBorder = {borderRadius: '0px'}
 
     const userLinks = (
-      <ul className="nav navbar-nav navbar-right">
-        <li><Link to="/portfolio">Portfolio</Link></li>
-        <li><a href="#" onClick={this.logout.bind(this)}>Logout</a></li>
+      <ul className="nav navbar-nav pull-right">
+        <li className="nav-item">
+          <Link to="/portfolio" className="nav-link active">Portfolio</Link>
+        </li>
+        <li className="nav-item">
+          <a href="#" className="nav-link" onClick={this.logout.bind(this)}>Logout</a>
+        </li>
       </ul>
     );
 
     const guestLinks = (
-      <ul className="nav navbar-nav navbar-right">
-        <li><Link to="/signup">Sign Up</Link></li>
-        <li><Link to="/login">Login</Link></li>
+      <ul className="nav navbar-nav pull-right">
+        <li className="nav-item">
+          <Link to="/signup" className="nav-link">Signup</Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/login" className="nav-link">Login</Link>
+        </li>
       </ul>
     );
 
     return (
-      <nav className="navbar navbar-inverse" style={navbarBorder}>
-        <div className="container-fluid">
-          <div className="navbar-header">
-            <Link to="/">
-              <p className="navbar-brand">Frank</p>
-            </Link>
-          </div>
+      <nav className="navbar navbar-light container-fluid navbar-dark bg-primary navbar-full" style={navbarBorder}>
+        <button className="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2" aria-controls="exCollapsingNavbar2" aria-expanded="false" aria-label="Toggle navigation">
+        &#9776;
+        </button>
 
-          <div className="collapse navbar-collapse">
-            { isAuthenticated ? userLinks : guestLinks }
-          </div>
+        <div className="collapse navbar-toggleable-xs container" id="exCollapsingNavbar2">
+          <Link to="/" className="navbar-brand">Stock Gains</Link>
+          { isAuthenticated ? userLinks : guestLinks }
         </div>
       </nav>
     )
@@ -57,3 +62,17 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { logout })(NavigationBar);
+
+// <nav className="nav" style={navbarBorder}>
+//   <div className="container-fluid">
+//     <div className="navbar-header">
+//       <Link to="/">
+//         <p className="navbar-brand">Frank</p>
+//       </Link>
+//     </div>
+//
+//     <div className="collapse navbar-collapse">
+//       { isAuthenticated ? userLinks : guestLinks }
+//     </div>
+//   </div>
+// </nav>

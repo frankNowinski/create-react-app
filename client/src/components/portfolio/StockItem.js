@@ -2,20 +2,14 @@ import React from 'react';
 
 const StockItem = (props) => {
   return (
-    <div className="row">
-      <div className="col-md-1">{props.stock.symbol}</div>
-      <div className="col-md-1">{props.stock.Ask}</div>
-      <div className="col-md-1">{props.stock.Price}</div>
-      <div className="col-md-1">{props.stock.PercentChange}</div>
-      <div className="col-md-1">{props.stock.YearHigh}</div>
-      <div className="col-md-1">{props.stock.OneyrTargetPrice}</div>
-      <div className="col-md-1">{props.stock.PERatio}</div>
-      <div className="col-md-1">{props.stock.PreviousClose}</div>
-      <div className="col-md-1">{props.stock.Volume}</div>
-      <div className="col-md-1">{props.stock.shares}</div>
-
-      <button onClick={props.deleteStock.bind(this, props.index, props.stock.id)} className="close col-md-1"><span>&times;</span></button>
-    </div>
+    <tr>
+      <td>{props.stock.Name}</td>
+      <td>{props.stock.Ask}</td>
+      <td>{props.stock.PercentChange}</td>
+      <td>{props.stock.shares}</td>
+      <td>{props.stock.dailyGain}</td>
+      <td onClick={props.deleteStock.bind(this, props.index, props.stock.id)} className="close col-md-1"><span>&times;</span></td>
+    </tr>
   )
 }
 
