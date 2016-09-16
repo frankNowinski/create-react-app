@@ -42,6 +42,7 @@ class AddStockForm extends React.Component {
       this.setState({ errors: {}, isLoading: true });
       this.props.addStock(this.state).then(stock => {
         this.setState({ symbol: '', shares: '', isLoading: false });
+        $('#addStock').modal('hide');
       }).catch(err => {
         if (err.response !== undefined) {
           this.setState({ errors: err.response.data, isLoading: false });
@@ -95,39 +96,65 @@ class AddStockForm extends React.Component {
   render() {
     const { errors } = this.state;
     return (
-      <form onSubmit={this.onSubmit} className="form-inline">
-        <div className={classnames("row", { 'has-error': errors.symbol })}>
-          <label className="col-md-4 lead">Symbol</label>
-          <input
-            type="text"
-            name="symbol"
-            value={this.state.symbol}
-            className="col-md-5 form-control"
-            onChange={this.onChange}
-            onBlur={this.checkStockExists}
-          />
-
-          {errors.symbol && <span className="help-block">{errors.symbol}</span>}
-        </div><br />
-
-        <div className={classnames("row", { 'has-error': errors.shares })}>
-          <label className="col-md-4 lead">Shares</label>
-          <input
-            type="text"
-            name="shares"
-            value={this.state.shares}
-            className="col-md-5 form-control"
-            onChange={this.onChange}
-            onBlur={this.checkSharesValid}
-          />
-
-          {errors.shares && <span className="help-block">{errors.shares}</span>}
+      <div>
+        <div className="row text-md-center">
+          <button type="button" className="btn btn-primary btn-md" data-toggle="modal" data-target="#addStock">
+          Add Stock
+          </button>
         </div>
 
-        <div className="row text-center">
-          <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+        <div className="modal fade" id="addStock" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 className="modal-title text-md-center" id="myModalLabel">Add a stock to your portfolio</h4>
+              </div>
+
+              <div className="modal-body">
+               <form onSubmit={this.onSubmit} className="form-inline">
+                 <div className={classnames("row", { 'has-error': errors.symbol })}>
+                   <label className="col-md-4 lead">Symbol</label>
+                   <input
+                    type="text"
+                    name="symbol"
+                    value={this.state.symbol}
+                    className="col-md-5 form-control"
+                    onChange={this.onChange}
+                    onBlur={this.checkStockExists}
+                  />
+
+                  {errors.symbol && <span className="help-block">{errors.symbol}</span>}
+                </div><br />
+
+                <div className={classnames("row", { 'has-error': errors.shares })}>
+                  <label className="col-md-4 lead">Shares</label>
+                  <input
+                    type="text"
+                    name="shares"
+                    value={this.state.shares}
+                    className="col-md-5 form-control"
+                    onChange={this.onChange}
+                    onBlur={this.checkSharesValid}
+                  />
+
+                  {errors.shares && <span className="help-block">{errors.shares}</span>}
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                  <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
+
     )
   }
 }

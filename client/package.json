@@ -27,7 +27,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "./node_modules/react-scripts/config/eslint.js"
+    "extends": "./node_modules/react-scripts/config/eslint.js",
+    "env": {
+        "jquery": true
+    }
   },
   "proxy": "http://localhost:8080"
 }
