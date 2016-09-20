@@ -18,14 +18,20 @@ class PortfolioPage extends React.Component {
       <div className="container">
         <h3 className="text-center display-1">Your Portfolio</h3><hr />
 
-        <div className="col-md-3">
-          <AddStockForm userStocks={this.props.userStocks} />
+        <div className="col-md-4">
+          <div className="row">
+            <AddStockForm userStocks={this.props.userStocks} />
+          </div><br />
+
+          <div className="row">
+            <StocksList
+              userStocks={this.props.userStocks}
+              deleteStock={this.deleteStock.bind(this)} />
+          </div>
         </div>
 
-        <div className="col-md-9">
-          <StocksList
-            userStocks={this.props.userStocks}
-            deleteStock={this.deleteStock.bind(this)} />
+        <div className="col-md-8">
+          Dashboard
         </div>
       </div>
     )

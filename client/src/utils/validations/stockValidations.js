@@ -8,8 +8,18 @@ export default function validateInput(data) {
     errors.symbol = 'Stock symbol is required';
   }
 
-  if (Validator.isNull(data.shares) || data.shares === 0) {
+  if (data.symbol.indexOf(' ') >= 0) {
+    errors.symbol = 'Symbol cannot contain a space';
+  }
+
+  if (Validator.isNull(data.shares)) {
     errors.shares = 'Must hold at least one share';
+  }
+
+  let shares = parseFloat(data.shares);
+
+  if (isNaN(shares) || shares < 0 || shares === 0) {
+    errors.shares = 'Must be a positive number';
   }
 
   return {
