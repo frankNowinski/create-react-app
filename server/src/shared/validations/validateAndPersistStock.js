@@ -2,11 +2,12 @@ import Validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 import request from 'request';
 import Stock from '../../models/stock';
-import formatUrlForYahooYQL from '../yahooApi/formatUrlForYahooYQL';
+import validateStockExists from '../yahooApi/validateStock';
+import stockHistoryUrl from '../yahooApi/stockHistoryUrl';
 import waterfall from 'async/waterfall';
 import moment from 'moment';
 
-function symbolAndSharesValid(symbol, shares) {
+function validateSymbolAndShares(symbol, shares) {
   return (!isEmpty(symbol) && !isEmpty(shares) && !isNaN(shares) || shares > 0 || shares !== 0)
 }
 
@@ -18,7 +19,7 @@ export default function validateAndPersistStock(req, res) {
   let errors = {};
 
   return waterfall([
-    function(callback) {
+    function (callback) {
       Stock.where({ 'userId': userId }).fetchAll({columns: ['symbol']}).then(userStocks => {
         let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
         if (stockSymbols.includes(symbol)) {
@@ -27,15 +28,15 @@ export default function validateAndPersistStock(req, res) {
         callback(null, errors);
       });
     },
-    function(errors, callback) {
+    function (errors, callback) {
       if (dateBought > moment().format()) {
         errors.dateBought = 'You cannot buy a stock that preceeds today.'
       }
       callback(null, errors)
     },
     function(errors, callback) {
-      if (symbolAndSharesValid(symbol, shares)){
-        request(formatUrlForYahooYQL(symbol), (error, response, body) => {
+      if (validateSymbolAndShares(symbol, shares)){
+        request(validateStockExists(symbol), (error, response, body) => {
           let parseStocks = JSON.parse(body);
           let stockData = parseStocks.query.results.quote;
 
@@ -46,7 +47,12 @@ export default function validateAndPersistStock(req, res) {
               stockData.id = stock.attributes.id;
               stockData.shares = stock.attributes.shares;
               stockData.dateBought = dateBought;
-              res.json(stockData);
+
+              request(stockHistoryUrl(symbol, dateBought), (errors, response, body) => {
+                let parseStocks = JSON.parse(body);
+                stockData.stockHistory = parseStocks.query.results.quote;
+                res.json(stockData);
+              })
             })
           } else {
             if (isEmpty(errors)) {

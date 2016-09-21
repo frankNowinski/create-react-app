@@ -4,14 +4,11 @@ import config from '../config';
 import knex from 'knex'
 import authenticate from '../middlewares/authenticate';
 import request from 'request';
-import formatUrlForYahooYQL from '../shared/yahooApi/formatUrlForYahooYQL';
-import fetchStockData from '../shared/yahooApi/fetchStockData';
-import Stock from '../models/stock';
+import validateStockExists from '../shared/yahooApi/validateStock';
 import validateAndPersistStock from '../shared/validations/validateAndPersistStock';
+import Stock from '../models/stock';
 
 let router = express();
-
-// fetchStockData
 
 router.get('/', authenticate, (req, res) => {
   let userId = req.currentUser.id;
@@ -20,7 +17,7 @@ router.get('/', authenticate, (req, res) => {
   .then(userStocks => {
     let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
     if (stockSymbols.length > 0) {
-      request(formatUrlForYahooYQL(stockSymbols.join('+')), (error, response, body) => {
+      request(validateStockExists(stockSymbols.join('+')), (error, response, body) => {
         if (!error && response.statusCode == 200) {
           let parseStocks = JSON.parse(body);
           let stockData = parseStocks.query.results.quote;
