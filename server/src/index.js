@@ -5,7 +5,6 @@ import bodyParser from 'body-parser';
 import users from './routes/users';
 import auth from './routes/auth';
 import stocks from './routes/stocks';
-import query from './routes/queryStock';
 
 let app = express();
 

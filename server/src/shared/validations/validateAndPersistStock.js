@@ -2,7 +2,7 @@ import Validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 import request from 'request';
 import Stock from '../../models/stock';
-import formatUrlForYahooYQL from '../yahooApi/getStockData';
+import formatUrlForYahooYQL from '../yahooApi/formatUrlForYahooYQL';
 import waterfall from 'async/waterfall';
 
 function symbolAndSharesValid(symbol, shares) {

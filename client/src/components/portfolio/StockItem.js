@@ -1,9 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { fetchStockHistory } from '../../actions/stockActions';
+import moment from 'moment';
 
 class StockItem extends React.Component {
   componentWillMount() {
-    // console.log('Get stocks');
+    let startDate = new Date(), endDate = new Date();
+    startDate = startDate.setDate(startDate.getDate()-6);
+    this.props.fetchStockHistory(this.props.stock.symbol,
+                                moment(startDate).format('YYYY-MM-DD'),
+                                moment(endDate).format('YYYY-MM-DD'));
   }
+
 
   render() {
     const dailyGain = this.props.stock.PreviousClose;
@@ -35,9 +43,15 @@ class StockItem extends React.Component {
   }
 }
 
-StockItem.propTypes = {
-  index: React.PropTypes.number.isRequired,
-  stock: React.PropTypes.object.isRequired
+function mapStateToProps(state) {
+  // console.log(state);
+  return state;
 }
 
-export default StockItem;
+StockItem.propTypes = {
+  index: React.PropTypes.number.isRequired,
+  stock: React.PropTypes.object.isRequired,
+  fetchStockHistory: React.PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps, { fetchStockHistory })(StockItem);

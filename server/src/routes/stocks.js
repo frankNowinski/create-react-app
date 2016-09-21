@@ -4,11 +4,14 @@ import config from '../config';
 import knex from 'knex'
 import authenticate from '../middlewares/authenticate';
 import request from 'request';
-import formatUrlForYahooYQL from '../shared/yahooApi/getStockData';
+import formatUrlForYahooYQL from '../shared/yahooApi/formatUrlForYahooYQL';
+import fetchStockData from '../shared/yahooApi/fetchStockData';
 import Stock from '../models/stock';
 import validateAndPersistStock from '../shared/validations/validateAndPersistStock';
 
 let router = express();
+
+// fetchStockData
 
 router.get('/', authenticate, (req, res) => {
   let userId = req.currentUser.id;

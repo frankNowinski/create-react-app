@@ -6,6 +6,11 @@ import { addStock } from '../../actions/stockActions';
 import validateStock from '../../utils/validations/stockValidations';
 import doesStockExists from '../../utils/validations/stockExistsValidation';
 
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+require('react-datepicker/dist/react-datepicker.css');
+require('../../css/calandar.css');
+
 class AddStockForm extends React.Component {
   constructor(props) {
     super(props);
@@ -16,16 +21,23 @@ class AddStockForm extends React.Component {
       errors: {},
       isLoading: false,
       invalid: false,
+      startDate: moment()
     }
 
     this.onChange = this.onChange.bind(this);
+    this.onCalandarChange = this.onCalandarChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.checkStockExists = this.checkStockExists.bind(this);
     this.checkSharesValid = this.checkSharesValid.bind(this);
   }
 
   onChange(e) {
+    console.log(e);
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onCalandarChange(date) {
+    this.setState({ startDate: date });
   }
 
   isValid() {
@@ -95,6 +107,7 @@ class AddStockForm extends React.Component {
 
   render() {
     const { errors } = this.state;
+
     return (
       <div>
         <div className="row text-md-center">
@@ -122,7 +135,7 @@ class AddStockForm extends React.Component {
                       type="text"
                       name="symbol"
                       value={this.state.symbol}
-                      className="form-control form-control"
+                      className="form-control"
                       onChange={this.onChange}
                       onBlur={this.checkStockExists}
                       placeholder="AAPL"
@@ -139,7 +152,7 @@ class AddStockForm extends React.Component {
                       type="text"
                       name="shares"
                       value={this.state.shares}
-                      className="col-md-5 form-control"
+                      className="form-control"
                       onChange={this.onChange}
                       onBlur={this.checkSharesValid}
                       placeholder="10"
@@ -149,10 +162,24 @@ class AddStockForm extends React.Component {
                   </div>
                 </div>
 
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+                <div className="form-group row">
+                  <label className="col-sm-5 text-sm-center lead">Date</label>
+                  <div className="col-sm-6">
+                    <DatePicker
+                      name="startDate"
+                      className="form-control datepicker-calandar"
+                      value={this.state.startDate}
+                      onChange={this.onCalandarChange}
+                      selected={this.state.startDate}
+                      filterDate={this.isWeekday}
+                    />
                   </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" disabled={this.state.invalid} className="btn btn-primary">Add Stock</button>
+                </div>
                 </form>
               </div>
             </div>
