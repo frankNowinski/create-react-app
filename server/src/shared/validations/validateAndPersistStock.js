@@ -4,6 +4,7 @@ import request from 'request';
 import Stock from '../../models/stock';
 import formatUrlForYahooYQL from '../yahooApi/formatUrlForYahooYQL';
 import waterfall from 'async/waterfall';
+import moment from 'moment';
 
 function symbolAndSharesValid(symbol, shares) {
   return (!isEmpty(symbol) && !isEmpty(shares) && !isNaN(shares) || shares > 0 || shares !== 0)
@@ -12,6 +13,7 @@ function symbolAndSharesValid(symbol, shares) {
 export default function validateAndPersistStock(req, res) {
   const { symbol } = req.body;
   const shares = parseFloat(req.body.shares);
+  const dateBought = moment(req.body.dateBought).format('YYYY-MM-DD');
   let userId = req.currentUser.id;
   let errors = {};
 
@@ -26,6 +28,12 @@ export default function validateAndPersistStock(req, res) {
       });
     },
     function(errors, callback) {
+      if (dateBought > moment().format()) {
+        errors.dateBought = 'You cannot buy a stock that preceeds today.'
+      }
+      callback(null, errors)
+    },
+    function(errors, callback) {
       if (symbolAndSharesValid(symbol, shares)){
         request(formatUrlForYahooYQL(symbol), (error, response, body) => {
           let parseStocks = JSON.parse(body);
@@ -33,10 +41,11 @@ export default function validateAndPersistStock(req, res) {
 
           if (stockData.Ask !== null && isEmpty(errors)) {
             Stock.forge({
-              symbol, shares, userId
+              symbol, shares, userId, dateBought
             }, { hasTimestamps: true }).save().then(stock => {
-              stockData.shares = stock.attributes.shares;
               stockData.id = stock.attributes.id;
+              stockData.shares = stock.attributes.shares;
+              stockData.dateBought = dateBought;
               res.json(stockData);
             })
           } else {
