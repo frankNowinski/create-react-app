@@ -4,12 +4,12 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { addStock } from '../../actions/stockActions';
 import validateStock from '../../utils/validations/stockValidations';
-import doesStockExists from '../../utils/validations/stockExistsValidation';
+import doesStockExists from '../../utils/validations/validateStockExists';
 
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 require('react-datepicker/dist/react-datepicker.css');
-require('../../css/calandar.css');
+require('../../css/calendar.css');
 
 class AddStockForm extends React.Component {
   constructor(props) {
@@ -17,11 +17,11 @@ class AddStockForm extends React.Component {
 
     this.state = {
       symbol: '',
+      dateBought: moment(),
       shares: '',
       errors: {},
       isLoading: false,
-      invalid: false,
-      startDate: moment()
+      invalid: false
     }
 
     this.onChange = this.onChange.bind(this);
@@ -32,12 +32,11 @@ class AddStockForm extends React.Component {
   }
 
   onChange(e) {
-    console.log(e);
     this.setState({ [e.target.name]: e.target.value });
   }
 
   onCalandarChange(date) {
-    this.setState({ startDate: date });
+    this.setState({ dateBought: date });
   }
 
   isValid() {
@@ -54,7 +53,7 @@ class AddStockForm extends React.Component {
     if (this.isValid()) {
       this.setState({ errors: {}, isLoading: true });
       this.props.addStock(this.state).then(stock => {
-        this.setState({ symbol: '', shares: '', isLoading: false });
+        this.setState({ symbol: '', shares: '', dateBought: moment(), isLoading: false });
         $('#addStock').modal('hide');
       }).catch(err => {
         if (err.response !== undefined) {
@@ -163,14 +162,14 @@ class AddStockForm extends React.Component {
                 </div>
 
                 <div className="form-group row">
-                  <label className="col-sm-5 text-sm-center lead">Date</label>
+                  <label className="col-sm-5 text-sm-center lead">Date Bought</label>
                   <div className="col-sm-6">
                     <DatePicker
                       name="startDate"
                       className="form-control datepicker-calandar"
-                      value={this.state.startDate}
+                      value={this.state.dateBought}
                       onChange={this.onCalandarChange}
-                      selected={this.state.startDate}
+                      selected={this.state.dateBought}
                       filterDate={this.isWeekday}
                     />
                   </div>

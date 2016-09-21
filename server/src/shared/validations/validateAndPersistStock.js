@@ -4,7 +4,7 @@ import request from 'request';
 import Stock from '../../models/stock';
 import validateStockExists from '../yahooApi/validateStock';
 import stockHistoryUrl from '../yahooApi/stockHistoryUrl';
-import waterfall from 'async/waterfall';
+import parallel from 'async/parallel';
 import moment from 'moment';
 
 function validateSymbolAndShares(symbol, shares) {
@@ -18,7 +18,7 @@ export default function validateAndPersistStock(req, res) {
   let userId = req.currentUser.id;
   let errors = {};
 
-  return waterfall([
+  return parallel([
     function (callback) {
       Stock.where({ 'userId': userId }).fetchAll({columns: ['symbol']}).then(userStocks => {
         let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
