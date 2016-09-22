@@ -12,58 +12,59 @@ function validateSymbolAndShares(symbol, shares) {
 }
 
 export default function validateAndPersistStock(req, res) {
-  const { symbol } = req.body;
+  const symbol = req.body.symbol;
   const shares = parseFloat(req.body.shares);
   const dateBought = moment(req.body.dateBought).format('YYYY-MM-DD');
-  let userId = req.currentUser.id;
+  const userId = req.currentUser.id;
   let errors = {};
 
-  return parallel([
-    function (callback) {
+  parallel({
+    alreadyOwned: function(callback) {
       Stock.where({ 'userId': userId }).fetchAll({columns: ['symbol']}).then(userStocks => {
         let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
+        stockSymbols.includes(symbol)
         if (stockSymbols.includes(symbol)) {
-          errors.symbol = 'You already own this stock';
-        };
-        callback(null, errors);
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
       });
     },
-    function (errors, callback) {
-      if (dateBought > moment().format()) {
-        errors.dateBought = 'You cannot buy a stock that preceeds today.'
-      }
-      callback(null, errors)
+    stockExists: function (callback) {
+      request(validateStockExists(symbol), (error, response, body) => {
+        let parseStock = JSON.parse(body);
+        let stockData = parseStock.query.results.quote;
+        if (stockData.Ask === null) {
+          errors.symbol = 'That stock ticker is invalid';
+          callback(null, false);
+        } else {
+          callback(null, stockData);
+        }
+      });
     },
-    function(errors, callback) {
-      if (validateSymbolAndShares(symbol, shares)){
-        request(validateStockExists(symbol), (error, response, body) => {
-          let parseStocks = JSON.parse(body);
-          let stockData = parseStocks.query.results.quote;
-
-          if (stockData.Ask !== null && isEmpty(errors)) {
-            Stock.forge({
-              symbol, shares, userId, dateBought
-            }, { hasTimestamps: true }).save().then(stock => {
-              stockData.id = stock.attributes.id;
-              stockData.shares = stock.attributes.shares;
-              stockData.dateBought = dateBought;
-
-              request(stockHistoryUrl(symbol, dateBought), (errors, response, body) => {
-                let parseStocks = JSON.parse(body);
-                stockData.stockHistory = parseStocks.query.results.quote;
-                res.json(stockData);
-              })
-            })
-          } else {
-            if (isEmpty(errors)) {
-              errors.symbol = 'Invalid stock';
-            }
-            res.status(400);
-          }
-        });
+    valid: function (callback) {
+      if (dateBought > moment().format() || !validateSymbolAndShares(symbol, shares)) {
+        callback(null, false)
       } else {
-        res.status(400);
+        callback(null, true)
       }
+    },
+  }, function(errors, results) {
+    if (!results.alreadyOwned && results.stockExists !== false && results.valid) {
+      let stockData = results.stockExists;
+
+      Stock.forge({
+        symbol, shares, userId, dateBought
+      }, { hasTimestamps: true }).save().then(stock => {
+        request(stockHistoryUrl(symbol, dateBought), (errors, response, body) => {
+          let parseStocks = JSON.parse(body);
+          stockData.stockHistory = parseStocks.query.results.quote;
+          let mergedStockData = Object.assign(stockData, stock.attributes);
+          res.json(mergedStockData);
+        })
+      });
+    } else {
+      res.status(400);
     }
-  ]);
+  });
 }
