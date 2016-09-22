@@ -20,7 +20,7 @@ export default function validateAndPersistStock(req, res) {
 
   parallel({
     alreadyOwned: function(callback) {
-      Stock.where({ 'userId': userId }).fetchAll({columns: ['symbol']}).then(userStocks => {
+      Stock.where({ 'userId': userId }).fetchAll({ columns: ['symbol'] }).then(userStocks => {
         let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
         stockSymbols.includes(symbol)
         if (stockSymbols.includes(symbol)) {
@@ -56,12 +56,7 @@ export default function validateAndPersistStock(req, res) {
       Stock.forge({
         symbol, shares, userId, dateBought
       }, { hasTimestamps: true }).save().then(stock => {
-        request(stockHistoryUrl(symbol, dateBought), (errors, response, body) => {
-          let parseStocks = JSON.parse(body);
-          stockData.stockHistory = parseStocks.query.results.quote;
-          let mergedStockData = Object.assign(stockData, stock.attributes);
-          res.json(mergedStockData);
-        })
+        res.json(Object.assign(results.stockExists, stock.attributes));
       });
     } else {
       res.status(400);

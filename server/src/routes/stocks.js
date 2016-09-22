@@ -20,16 +20,22 @@ router.get('/', authenticate, (req, res) => {
     let stockSymbols = userStocks.map(stock => stock.attributes.symbol);
     let stocks = userStocks.models.map(stock => stock.attributes);
 
-    request(yahooApiUrl(stockSymbols), (error, response, body) => {
-      let parseStocks = JSON.parse(body);
-      let stockData = parseStocks.query.results.quote
-      let mergeStockData = []
+    if (stockSymbols.length > 0) {
+      request(yahooApiUrl(stockSymbols), (error, response, body) => {
+        let parseStocks = JSON.parse(body);
+        let stockData = parseStocks.query.results.quote;
+        stockData = stockData.length === undefined ? [stockData] : stockData;
+        let mergeStockData = []
 
-      for (let i = 0; i < stockSymbols.length; i++) {
-        mergeStockData.push(Object.assign(stockData[i], stocks[i]));
-      }
-      res.json(mergeStockData);
-    })
+        for (let i = 0; i < stockSymbols.length; i++) {
+          console.log(Object.assign(stockData[i], stocks[i]));
+          mergeStockData.push(Object.assign(stockData[i], stocks[i]));
+        }
+        res.json(mergeStockData);
+      })
+    } else {
+      res.status(400);
+    }
   });
 });
 
