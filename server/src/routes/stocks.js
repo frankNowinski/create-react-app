@@ -7,33 +7,52 @@ import request from 'request';
 import validateStockExists from '../shared/yahooApi/validateStock';
 import validateAndPersistStock from '../shared/validations/validateAndPersistStock';
 import Stock from '../models/stock';
+import stockHistoryUrl from '../shared/yahooApi/stockHistoryUrl';
+import each from 'async/each';
 
 let router = express();
 
 router.get('/', authenticate, (req, res) => {
   let userId = req.currentUser.id;
+  let counter = 0;
+  let finalArr = [];
 
-  Stock.where({userId: userId}).fetchAll({ columns: [ 'id', 'symbol', 'shares' ]})
+  Stock.where({userId: userId}).fetchAll({ columns: [ 'id', 'symbol', 'shares', 'dateBought' ]})
   .then(userStocks => {
-    let stockSymbols = userStocks.models.map(stock => stock.attributes.symbol);
-    if (stockSymbols.length > 0) {
-      request(validateStockExists(stockSymbols.join('+')), (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          let parseStocks = JSON.parse(body);
-          let stockData = parseStocks.query.results.quote;
-          stockData = stockData.length === undefined ? [stockData] : stockData;
+    let stockSymbols = userStocks.map(stock => stock.attributes.symbol);
+    let stocks = userStocks.models.map(stock => stock.attributes);
+    let stockHistoryArray = [];
 
-          for (let i = 0; i < stockData.length; i++) {
-            stockData[i].shares = userStocks.models[i].attributes.shares
-            stockData[i].id = userStocks.models[i].attributes.id
-          }
-          res.json(stockData);
+    each(stocks, (stock, callback) => {
+      request(stockHistoryUrl(stock.symbol, stock.dateBought), (errors, response, body) => {
+        let parseStocks = JSON.parse(body);
+        stock.stockHistory = parseStocks.query.results.quote;
+        stockHistoryArray.push(stock);
+
+        if (stockHistoryArray.length === stockSymbols.length) {
+          callback(stockHistoryArray);
         }
-      });
-    } else {
-      res.status(500);
-    }
+      })
+    }, function(stockHistory) {
+      request(validateStockExists(stockSymbols), (error, response, body) => {
+        let parseStock = JSON.parse(body);
+        let stockData = parseStock.query.results.quote;
+        let finalArray = [], mergeStockObjects;
+
+        for (let i = 0; i < stockHistory.length; i++) {
+          mergeStockObjects = Object.assign(stockData[i], stockHistory[i]);
+          finalArray.push(mergeStockObjects);
+        }
+        res.json(finalArray);
+      })
+    })
   });
+});
+
+router.get('/:id', authenticate, (req, res) => {
+  Stock.where({ id: req.params.id }).fetch().then(stock => {
+    res.json(stock)
+  })
 });
 
 router.post('/', authenticate, (req, res) => {
@@ -42,7 +61,7 @@ router.post('/', authenticate, (req, res) => {
 
 router.delete('/:id', authenticate, (req, res) => {
   Stock.query().where('id', req.params.id).del()
-  .then(stock => res.json( req.params.id ))
+  .then(stock => res.json(req.params.id))
   .catch(err => res.status(500).json({ error: err }));
 });
 

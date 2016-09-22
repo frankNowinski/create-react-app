@@ -6,6 +6,7 @@ import Home from './components/Home';
 import SignupPage from './components/signup/SignupPage';
 import LoginPage from './components/login/LoginPage';
 import PortfolioPage from './components/portfolio/PortfolioPage';
+import StockPage from './components/stock/StockPage';
 
 import requireAuth from './utils/auth/requireAuth';
 
@@ -15,5 +16,6 @@ export default (
     <Route path="signup" component={SignupPage} />
     <Route path="login" component={LoginPage} />
     <Route path="portfolio" component={requireAuth(PortfolioPage)} />
+    <Route path="stocks" component={requireAuth(StockPage)} />
   </Route>
 )

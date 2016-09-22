@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { fetchStocks, removeStock } from '../../actions/stockActions';
 import AddStockForm from './AddStockForm';
 import StocksList from './StocksList';
+import StockPage from '../stock/StockPage';
 
 class PortfolioPage extends React.Component {
   componentWillMount() {
@@ -31,7 +32,7 @@ class PortfolioPage extends React.Component {
         </div>
 
         <div className="col-md-8">
-          Dashboard
+          <StockPage />
         </div>
       </div>
     )
