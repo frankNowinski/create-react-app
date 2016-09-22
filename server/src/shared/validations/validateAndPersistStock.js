@@ -2,7 +2,7 @@ import Validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 import request from 'request';
 import Stock from '../../models/stock';
-import validateStockExists from '../yahooApi/validateStock';
+import yahooApiUrl from '../yahooApi/apiUrl';
 import stockHistoryUrl from '../yahooApi/stockHistoryUrl';
 import parallel from 'async/parallel';
 import moment from 'moment';
@@ -31,7 +31,7 @@ export default function validateAndPersistStock(req, res) {
       });
     },
     stockExists: function (callback) {
-      request(validateStockExists(symbol), (error, response, body) => {
+      request(yahooApiUrl(symbol), (error, response, body) => {
         let parseStock = JSON.parse(body);
         let stockData = parseStock.query.results.quote;
         if (stockData.Ask === null) {
