@@ -6,7 +6,6 @@ import { Link } from 'react-router';
 class StockItem extends React.Component {
   onClick(e) {
     e.preventDefault();
-
     this.props.getStock(this.props.stock.id);
   }
 

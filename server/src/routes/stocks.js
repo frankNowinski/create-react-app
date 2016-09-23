@@ -5,7 +5,9 @@ import knex from 'knex'
 import authenticate from '../middlewares/authenticate';
 import request from 'request';
 import yahooApiUrl from '../shared/yahooApi/apiUrl';
+import stockHistoryUrl from '../shared/yahooApi/stockHistoryUrl';
 import validateAndPersistStock from '../shared/validations/validateAndPersistStock';
+import parallel from 'async/parallel';
 import Stock from '../models/stock';
 
 let router = express();
@@ -25,13 +27,13 @@ router.get('/', authenticate, (req, res) => {
         let parseStocks = JSON.parse(body);
         let stockData = parseStocks.query.results.quote;
         stockData = stockData.length === undefined ? [stockData] : stockData;
-        let mergeStockData = []
 
         for (let i = 0; i < stockSymbols.length; i++) {
-          console.log(Object.assign(stockData[i], stocks[i]));
-          mergeStockData.push(Object.assign(stockData[i], stocks[i]));
+          stockData[i].id = stocks[i].id;
+          stockData[i].shares = stocks[i].shares;
+          stockData[i].dateBought = stocks[i].dateBought;
         }
-        res.json(mergeStockData);
+        res.json(stockData);
       })
     } else {
       res.status(400);
@@ -40,8 +42,31 @@ router.get('/', authenticate, (req, res) => {
 });
 
 router.get('/:id', authenticate, (req, res) => {
-  Stock.where({ id: req.params.id }).fetch().then(stock => {
-    res.json(stock)
+  Stock.where({ id: req.params.id }).fetch().then(s => {
+    let stock = s.attributes;
+
+    parallel({
+      stockData: function(callback) {
+        request(yahooApiUrl(stock.symbol), (error, response, body) => {
+          let parseStocks = JSON.parse(body);
+          let stockData = parseStocks.query.results.quote;
+
+          stockData.id = stock.id;
+          stockData.shares = stock.shares;
+          stockData.dateBought = stock.dateBought;
+          callback(null, stockData);
+        });
+      },
+      stockHistory: function(callback) {
+        request(stockHistoryUrl(stock.symbol, stock.dateBought), (error, response, body) => {
+          let parseStocks = JSON.parse(body);
+          callback(null, parseStocks.query.results.quote);
+        });
+      }
+    }, function(err, results) {
+      results.stockData.stockHistory = results.stockHistory.reverse();
+      res.json(results.stockData);
+    })
   })
 });
 

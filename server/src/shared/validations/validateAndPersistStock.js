@@ -56,7 +56,10 @@ export default function validateAndPersistStock(req, res) {
       Stock.forge({
         symbol, shares, userId, dateBought
       }, { hasTimestamps: true }).save().then(stock => {
-        res.json(Object.assign(results.stockExists, stock.attributes));
+        results.stockExists.id = stock.attributes.id;
+        results.stockExists.shares = stock.attributes.shares;
+        results.stockExists.dateBought = stock.attributes.dateBought;
+        res.json(results.stockExists);
       });
     } else {
       res.status(400);
