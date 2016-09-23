@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getStock } from '../../actions/stockActions';
 import { Link } from 'react-router';
+import Lens from 'react-lens';
+import classnames from 'classnames';
 
 class StockItem extends React.Component {
   onClick(e) {
@@ -17,11 +19,15 @@ class StockItem extends React.Component {
 
         <div className="row">
           <div className="col-md-5">
-            <p className="list-group-item-text">Price: {this.props.stock.Ask}</p>
+            <p className="list-group-item-text">Price:{ ' ' }
+              <Lens filter="currency">{parseFloat(this.props.stock.Ask)}</Lens>
+            </p>
           </div>
 
           <div className="col-md-7">
-            <p className="list-group-item-text">Percent Change: {this.props.stock.PercentChange}</p>
+            <p className="list-group-item-text">Percent Change:{ ' ' }
+              <span className={classnames("list-group-item-text", { 'has-error': parseFloat(this.props.stock.PercentChange) < 0, 'success': parseFloat(this.props.stock.PercentChange) > 0 })}>{parseFloat(this.props.stock.PercentChange).toFixed(2)}%</span>
+            </p>
           </div>
         </div>
         <div className="row">
@@ -30,7 +36,9 @@ class StockItem extends React.Component {
           </div>
 
           <div className="col-md-7">
-            <p className="list-group-item-text">Days Gain: {this.props.stock.Ask}</p>
+            <p className="list-group-item-text">Days Gain:{ ' ' }
+                <span className={classnames({ 'has-error': this.props.stock.dailyGain < 0, 'success': this.props.stock.dailyGain > 0})}><Lens filter="currency">{this.props.stock.dailyGain}</Lens></span>
+            </p>
           </div>
         </div>
       </Link>

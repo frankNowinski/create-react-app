@@ -24,8 +24,7 @@ router.get('/', authenticate, (req, res) => {
 
     if (stockSymbols.length > 0) {
       request(yahooApiUrl(stockSymbols), (error, response, body) => {
-        let parseStocks = JSON.parse(body);
-        let stockData = parseStocks.query.results.quote;
+        let stockData = JSON.parse(body).query.results.quote;
         stockData = stockData.length === undefined ? [stockData] : stockData;
 
         for (let i = 0; i < stockSymbols.length; i++) {
@@ -48,9 +47,7 @@ router.get('/:id', authenticate, (req, res) => {
     parallel({
       stockData: function(callback) {
         request(yahooApiUrl(stock.symbol), (error, response, body) => {
-          let parseStocks = JSON.parse(body);
-          let stockData = parseStocks.query.results.quote;
-
+          let stockData = JSON.parse(body).query.results.quote;
           stockData.id = stock.id;
           stockData.shares = stock.shares;
           stockData.dateBought = stock.dateBought;
@@ -59,8 +56,7 @@ router.get('/:id', authenticate, (req, res) => {
       },
       stockHistory: function(callback) {
         request(stockHistoryUrl(stock.symbol, stock.dateBought), (error, response, body) => {
-          let parseStocks = JSON.parse(body);
-          callback(null, parseStocks.query.results.quote);
+          callback(null, JSON.parse(body).query.results.quote);
         });
       }
     }, function(err, results) {

@@ -69,7 +69,14 @@ class StockChart extends React.Component {
               [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
             ]
           }
-        }]
+        }],
+        plotOptions: {
+          series: {
+            marker: {
+              enabled: false
+            }
+          }
+        }
       }
       return <ReactHighcharts config={config}></ReactHighcharts>
     }

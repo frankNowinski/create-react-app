@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import StockChart from './StockChart.js';
 
 class StockPage extends React.Component {
-
   render() {
     return (
       <div>
