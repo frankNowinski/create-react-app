@@ -2,6 +2,10 @@ import React from 'react';
 import StockItem from './StockItem';
 
 class StockList extends React.Component {
+  componentWillMount() {
+    console.log(this.props.userStocks);
+  }
+  
   renderStocks() {
     return this.props.userStocks.map((stock, index) => {
       return (

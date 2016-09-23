@@ -37,7 +37,7 @@ class StockItem extends React.Component {
 
           <div className="col-md-7">
             <p className="list-group-item-text">Days Gain:{ ' ' }
-                <span className={classnames({ 'has-error': this.props.stock.dailyGain < 0, 'success': this.props.stock.dailyGain > 0})}><Lens filter="currency">{this.props.stock.dailyGain}</Lens></span>
+              <span className={classnames({ 'has-error': this.props.stock.dailyGain < 0, 'success': this.props.stock.dailyGain > 0})}><Lens filter="currency">{this.props.stock.dailyGain}</Lens></span>
             </p>
           </div>
         </div>
