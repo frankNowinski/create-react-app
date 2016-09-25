@@ -32,7 +32,7 @@ export default function validateAndPersistStock(req, res) {
     },
     stockExists: function (callback) {
       request(yahooApiUrl(symbol), (error, response, body) => {
-        let stockData = JSON.parse(body).query.results.quote;
+        let stockData = body.query.results.quote;
         if (stockData.Ask === null) {
           errors.symbol = 'That stock ticker is invalid';
           callback(null, false);

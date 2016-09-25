@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import Highcharts from 'highcharts';
 import ReactHighcharts from 'react-highcharts';
@@ -83,9 +84,7 @@ class StockChart extends React.Component {
   }
 
   render() {
-    return (
-      <div>{this.configChart()}</div>
-    )
+    return <div>{this.configChart()}</div>
   }
 }
 

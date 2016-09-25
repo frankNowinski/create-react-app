@@ -5,11 +5,8 @@ import { connect } from 'react-redux';
 import { addStock } from '../../actions/stockActions';
 import validateStock from '../../utils/validations/stockValidations';
 import doesStockExists from '../../utils/validations/validateStockExists';
-
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-require('react-datepicker/dist/react-datepicker.css');
-require('../../css/calendar.css');
 
 class AddStockForm extends React.Component {
   constructor(props) {

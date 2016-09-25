@@ -6,7 +6,6 @@ import StocksList from './StocksList';
 import TotalDailyReturn from './TotalDailyReturn';
 import StockPage from '../stock/StockPage';
 import isEmpty from 'lodash/isEmpty';
-import Lens from 'react-lens';
 
 class PortfolioPage extends React.Component {
   componentWillMount() {
@@ -32,11 +31,7 @@ class PortfolioPage extends React.Component {
       <div className="container">
         <h3 className="text-center display-1">Your Portfolio</h3><hr />
 
-        <div className="col-md-4">
-          <div className="row">
-            <AddStockForm userStocks={this.props.userStocks} />
-          </div><br />
-
+        <div className="col-md-3">
           <div className="row">
             <StocksList
               userStocks={this.props.userStocks}
@@ -45,6 +40,9 @@ class PortfolioPage extends React.Component {
         </div>
 
         <div className="col-md-8">
+          <div className="row">
+            <AddStockForm userStocks={this.props.userStocks} />
+          </div><br />
           <TotalDailyReturn totalReturn={this.totalReturn()} />
           <StockPage />
         </div>

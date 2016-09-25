@@ -1,0 +1,16 @@
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.has-error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+.stock-item-caption {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2px;
+}

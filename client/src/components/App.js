@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import NavigationBar from './NavigationBar';
 import FlashMessagesList from './flash/FlashMessagesList';
+require('react-datepicker/dist/react-datepicker.css');
+require('../css/main.css');
 
 class App extends Component {
   render() {

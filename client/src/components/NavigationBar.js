@@ -62,17 +62,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { logout })(NavigationBar);
-
-// <nav className="nav" style={navbarBorder}>
-//   <div className="container-fluid">
-//     <div className="navbar-header">
-//       <Link to="/">
-//         <p className="navbar-brand">Frank</p>
-//       </Link>
-//     </div>
-//
-//     <div className="collapse navbar-collapse">
-//       { isAuthenticated ? userLinks : guestLinks }
-//     </div>
-//   </div>
-// </nav>

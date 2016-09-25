@@ -1,10 +1,12 @@
 import React from 'react';
-import isEmpty from 'lodash/isEmpty';
+import Lens from 'react-lens';
 
-class TotalDailyReturn extends React.Component {
-  render() {
-    return <div>{this.props.totalReturn ? this.props.totalReturn : ''}</div>
-  }
+const TotalDailyReturn = (props) => {
+  return (
+    <div>
+      <Lens filter="currency">{props.totalReturn ? parseFloat(props.totalReturn) : 0}</Lens>
+    </div>
+  )
 }
 
 export default TotalDailyReturn;
