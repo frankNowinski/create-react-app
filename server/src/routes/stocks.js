@@ -8,6 +8,7 @@ import yahooApiUrl from '../shared/yahooApi/apiUrl';
 import stockHistoryUrl from '../shared/yahooApi/stockHistoryUrl';
 import validateAndPersistStock from '../shared/validations/validateAndPersistStock';
 import parallel from 'async/parallel';
+import moment from 'moment';
 import Stock from '../models/stock';
 
 let router = express();
@@ -68,6 +69,19 @@ router.get('/:id', authenticate, (req, res) => {
 
 router.post('/', authenticate, (req, res) => {
   validateAndPersistStock(req, res);
+});
+
+router.put('/:id', authenticate, (req, res) => {
+  const shares = parseFloat(req.body.shares);
+  const dateBought = moment(req.body.dateBought).format('YYYY-MM-DD');
+
+  new Stock({ id: req.params.id}).save({
+    shares: shares,
+    dateBought: dateBought
+  }, { patch: true })
+  .then(stock => {
+    res.json(stock);
+  });
 });
 
 router.delete('/:id', authenticate, (req, res) => {

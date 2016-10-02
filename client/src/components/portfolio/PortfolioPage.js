@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchStocks, removeStock } from '../../actions/stockActions';
+import { fetchStocks, updateStock } from '../../actions/stockActions';
 import AddStockForm from './AddStockForm';
 import StocksList from './StocksList';
 import TotalDailyReturn from './TotalDailyReturn';
@@ -11,11 +11,6 @@ class PortfolioPage extends React.Component {
   componentWillMount() {
     this.props.fetchStocks();
   }
-
-  deleteStock(index, id) {
-    this.props.removeStock(index, id);
-  }
-
   totalReturn() {
     let gains = this.props.userStocks.map(stock => {
       stock.dailyGain = (stock.LastTradePriceOnly - stock.PreviousClose) * stock.shares;
@@ -25,7 +20,6 @@ class PortfolioPage extends React.Component {
       return parseFloat(gains.reduce((prev, curr) => prev + curr)).toFixed(2)
     }
   }
-
   render() {
     return (
       <div className="container">
@@ -35,7 +29,7 @@ class PortfolioPage extends React.Component {
           <div className="row">
             <StocksList
               userStocks={this.props.userStocks}
-              deleteStock={this.deleteStock.bind(this)} />
+            />
           </div>
         </div>
 
@@ -59,7 +53,6 @@ function mapStateToProps(state) {
 
 PortfolioPage.propTypes = {
   fetchStocks: React.PropTypes.func.isRequired,
-  removeStock: React.PropTypes.func.isRequired
 }
 
-export default connect(mapStateToProps, { fetchStocks, removeStock })(PortfolioPage);
+export default connect(mapStateToProps, { fetchStocks, updateStock })(PortfolioPage);

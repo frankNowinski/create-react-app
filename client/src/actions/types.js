@@ -4,4 +4,5 @@ export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const ADD_STOCK_TO_PORTFOLIO = 'ADD_STOCK_TO_PORTFOLIO';
 export const FETCH_STOCKS = 'FETCH_STOCKS';
 export const GET_STOCK = 'GET_STOCK';
+export const UPDATE_STOCK = 'UPDATE_STOCK';
 export const REMOVE_STOCK = 'REMOVE_STOCK';

@@ -27,15 +27,12 @@ class AddStockForm extends React.Component {
     this.checkStockExists = this.checkStockExists.bind(this);
     this.checkSharesValid = this.checkSharesValid.bind(this);
   }
-
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
-
   onCalandarChange(date) {
     this.setState({ dateBought: date });
   }
-
   isValid() {
     const { errors, isValid } = validateStock(this.state);
     if (!isValid) {
@@ -43,7 +40,6 @@ class AddStockForm extends React.Component {
     }
     return isValid;
   }
-
   onSubmit(e) {
     e.preventDefault();
 
@@ -61,7 +57,6 @@ class AddStockForm extends React.Component {
       });
     }
   }
-
   checkStockExists(e) {
     const symbol = e.target.value;
     let ownedSymbols = this.props.userStocks.map(stock => stock.symbol);
@@ -84,7 +79,6 @@ class AddStockForm extends React.Component {
       })
     }
   }
-
   checkSharesValid(e) {
     const shares = parseFloat(e.target.value);
     let invalid, errors = this.state.errors;
@@ -100,7 +94,6 @@ class AddStockForm extends React.Component {
       this.setState({ errors, invalid });
     }
   }
-
   render() {
     const { errors } = this.state;
 

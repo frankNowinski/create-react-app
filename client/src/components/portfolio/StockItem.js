@@ -1,19 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getStock } from '../../actions/stockActions';
+import { getStock, removeStock } from '../../actions/stockActions';
 import { Link } from 'react-router';
 import Lens from 'react-lens';
 import classnames from 'classnames';
 import EditIcon from 'react-icons/lib/ti/edit';
 import DeleteIcon from 'react-icons/lib/ti/delete';
+import EditStockPage from './EditStockPage';
 
 class StockItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { showEditForm: false };
+    this.toggleEditStockForm = this.toggleEditStockForm.bind(this);
+  }
   onClick(e) {
     e.preventDefault();
     this.props.getStock(this.props.stock.id);
   }
-
-  render() {
+  editStock(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ showEditForm: true });
+  }
+  deleteStock(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.removeStock(this.props.stock.id, this.props.index);
+  }
+  toggleEditStockForm(e) {
+    e.preventDefault();
+    this.setState({ showEditForm: false });
+  }
+  renderStockItem() {
     return (
       <Link to="/stocks" onClick={this.onClick.bind(this)} className="list-group-item list-group-item-action">
         <h5 className="list-group-item-heading text-md-center">{this.props.stock.Name}</h5><hr />
@@ -35,19 +55,31 @@ class StockItem extends React.Component {
 
           <div className="col-sm-2">
             <div>
-              <button className="close text-xs-center"><EditIcon /></button>
+              <button onClick={this.editStock.bind(this)} className="close text-xs-center"><EditIcon /></button>
             </div><br />
             <div>
-              <button onClick={this.props.deleteStock.bind(this, this.props.index, this.props.stock.id)} className="close text-xs-center"><DeleteIcon /></button>
+              <button onClick={this.deleteStock.bind(this)} className="close text-xs-center"><DeleteIcon /></button>
             </div>
           </div>
-        </div>
-        <hr />
+        </div><hr />
+
         <div className="row text-xs-center">
           <span><strong>Days Gain:{' '}</strong></span>
           <span className={classnames({ 'has-error': this.props.stock.dailyGain < 0, 'success': this.props.stock.dailyGain > 0})}><Lens filter="currency">{this.props.stock.dailyGain}</Lens></span>
         </div>
       </Link>
+    )
+  }
+  render() {
+    return (
+      <div>
+        {this.state.showEditForm ?
+          <EditStockPage
+            toggleEditStockForm={this.toggleEditStockForm}
+            index={this.props.index}
+            stock={this.props.stock}
+          /> : this.renderStockItem() }
+      </div>
     )
   }
 }
@@ -58,4 +90,4 @@ StockItem.propTypes = {
   getStock: React.PropTypes.func.isRequired
 }
 
-export default connect(null, { getStock })(StockItem);
+export default connect(null, { getStock, removeStock })(StockItem);
